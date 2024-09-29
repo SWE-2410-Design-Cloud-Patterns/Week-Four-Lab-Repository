@@ -7,6 +7,7 @@
  */
 package mketour;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -81,6 +82,11 @@ public class CityMap extends Application {
     private final Text challengeText = new Text();
     private final ArtChallengeObserver artChallengeObserver = new ArtChallengeObserver();
 
+    private final Text msoeChallengeText = new Text();
+    private final Text msoeChallengeGoalText = new Text();
+    private final Text msoeChallengeFoundText = new Text();
+    private final MSOEChallengeObserver msoeChallengeObserver = new MSOEChallengeObserver();
+
 
 
 
@@ -145,6 +151,7 @@ public class CityMap extends Application {
             if(taggable.isTagged(entity.getLocation())) {
                 taggable.taggedBy(entity);
             }
+
         }
     }
 
@@ -176,6 +183,19 @@ public class CityMap extends Application {
         museumChallenge.setPrefWidth(WIDTH);
         museumChallenge.setSpacing(SPACING);
 
+        VBox msoeChallenge = new VBox();
+        msoeChallengeText.setFont(new Font(20));
+        msoeChallengeGoalText.setText("Goal: MSOE");
+        msoeChallengeGoalText.setFont(new Font(20));
+        msoeChallengeFoundText.setText("Found: ****");
+        msoeChallengeFoundText.setFont(new Font(20));
+        msoeChallenge.getChildren().addAll(msoeChallengeText, msoeChallengeGoalText, msoeChallengeFoundText);
+        msoeChallenge.setPrefWidth(WIDTH);
+
+        VBox challengeCombined = new VBox();
+        challengeCombined.getChildren().addAll(msoeChallenge, museumChallenge);
+        challengeCombined.setSpacing(SPACING);
+
 
         backgroundView.relocate(0, 0);
         mapPane.setMaxWidth(BACKGROUND_IMAGE.getWidth());
@@ -185,7 +205,7 @@ public class CityMap extends Application {
         mapPane.getChildren().addAll(overlay);
         challengeText.setText("Challenge: Find art");
         challengeText.setFont(new Font(FONT_SIZE));
-        root.getChildren().addAll(mapPane, museumChallenge, challengePane);
+        root.getChildren().addAll(mapPane, challengeCombined, challengePane);
 
 
         primaryStage.setScene(new Scene(root));
@@ -215,6 +235,8 @@ public class CityMap extends Application {
         IMAGE_VIEW.setFitWidth(height);
         IMAGE_VIEW.setFitHeight(width);
     }
+
+
 
     /**
      * Get the main character Singleton
