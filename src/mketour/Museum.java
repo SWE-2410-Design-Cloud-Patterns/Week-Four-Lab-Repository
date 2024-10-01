@@ -87,7 +87,7 @@ public class Museum implements Taggable, Observable {
      */
     public void notifyObservers() {
         for(ChallengeObserver observer : observers) {
-            observer.update(CityMap.getMuseums(), CityMap.getMainCharacter());
+            observer.update(CityMap.getMobileEntities());
         }
     }
 
@@ -119,7 +119,7 @@ public class Museum implements Taggable, Observable {
             notifyObservers();
         }
 
-        if(CityMap.DEBUG_LEVEL == 0) {
+        if(CityMap.DEBUG_LEVEL > 0) {
             System.out.println(this + " was tagged by " + entity);
         }
     }

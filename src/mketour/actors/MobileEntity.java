@@ -1,9 +1,9 @@
 /*
  * Course: SWE2410
  * Fall 2024
- * Lab 3 - Tourist Observer
+ * Lab 4 - Tourist Observer
  * Name: Jawadul Chowdhury
- * Submission Date: 9/23/24
+ * Submission Date: 9/30/24
  */
 package mketour.actors;
 
@@ -15,8 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import mketour.BusChallengeObserver;
 import mketour.CityMap;
+import mketour.MSOEChallengeObserver;
 import mketour.Taggable;
+
+import java.util.List;
 
 /**
  * Represents anything that can move around town.
@@ -24,6 +28,9 @@ import mketour.Taggable;
  * Basic functionality to display the item on the cityMap and move in straight lines.
  */
 public abstract class MobileEntity implements Taggable {
+
+    MSOEChallengeObserver msoeChallengeObserver = new MSOEChallengeObserver();
+    BusChallengeObserver busChallengeObserver = new BusChallengeObserver();
 
     /**
      * Height in pixels to show an entity on the cityMap
@@ -239,9 +246,20 @@ public abstract class MobileEntity implements Taggable {
     @Override
     public void taggedBy(MobileEntity entity) {
 
+        Point2D mainCharacterLocation = CityMap.getMainCharacter().getLocation();
+
+        if(entity instanceof Car && this instanceof Car && this.isTagged(mainCharacterLocation)) {
+            msoeChallengeObserver.update(CityMap.getMobileEntities());
+        }
+
+        if(entity instanceof Bus && this instanceof Bus && this.isTagged(mainCharacterLocation)) {
+            busChallengeObserver.update(CityMap.getMobileEntities());
+        }
+
         if (CityMap.DEBUG_LEVEL > 0) {
             System.out.println(this + " tagged by  " + entity);
         }
+
     }
 
 

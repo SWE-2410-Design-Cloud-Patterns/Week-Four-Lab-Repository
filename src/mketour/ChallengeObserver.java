@@ -1,9 +1,9 @@
 /*
  * Course: SWE2410
  * Fall 2024
- * Lab 3 - Tourist Observer
+ * Lab 4 - Tourist Observer
  * Name: Jawadul Chowdhury
- * Submission Date: 9/23/24
+ * Submission Date: 9/30/24
  */
 package mketour;
 
@@ -17,9 +17,8 @@ public interface ChallengeObserver {
 
     /**
      * method for updating
-     * @param museum museum
      * @param mobileEntity person
      */
-    void update(List<Museum> museum, MobileEntity mobileEntity);
+    void update(List<MobileEntity> mobileEntity);
 
 }

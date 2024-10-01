@@ -1,13 +1,12 @@
 /*
  * Course: SWE2410
  * Fall 2024
- * Lab 3 - Tourist Observer
+ * Lab 4 - Tourist Observer
  * Name: Jawadul Chowdhury
- * Submission Date: 9/23/24
+ * Submission Date: 9/30/24
  */
 package mketour;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,11 +40,6 @@ import mketour.actors.Person;
 public class CityMap extends Application {
 
     /**
-     * number of tourists
-     */
-    public static final int NUM_TOURISTS = 15;
-
-    /**
      * set non-zero to control debugging; return to 0 when demo -
      * critical because this slows simulations
      */
@@ -58,6 +52,24 @@ public class CityMap extends Application {
      * number of buses
      */
     public static final int NUM_BUSSES = 2;
+
+    /**
+     * number of tourists
+     */
+    public static final int NUM_TOURISTS = 15;
+
+    static final Text BUS_CHALLENGE_FOUND_TEXT = new Text();
+    private static final Text MSOE_CHALLENGE_FONUD_TEXT = new Text();
+
+
+
+    // the bus challenge
+    private static final Text BUS_CHALLENGE_TEXT = new Text();
+    private static final Text BUS_CHALLENGE_GOAL = new Text();
+
+
+    private static final List<MobileEntity> MOBILE_ENTITIES = new ArrayList<>();
+
     private static final int WIDTH = 250;
     private static final int SPACING = 10;
     private static final Image BACKGROUND_IMAGE = new Image(CityMap.class.getResource("img/map.png")
@@ -77,16 +89,13 @@ public class CityMap extends Application {
     private Pane challengePane;
     private final Collection<Taggable> taggables = new ArrayList<>();
 
-    private final List<MobileEntity> mobileEntities = new ArrayList<>();
-
-    private final Text challengeText = new Text();
+    // the art challenge
+    private final Text artChallengeText = new Text();
     private final ArtChallengeObserver artChallengeObserver = new ArtChallengeObserver();
 
+    // the msoe challenge
     private final Text msoeChallengeText = new Text();
     private final Text msoeChallengeGoalText = new Text();
-    private final Text msoeChallengeFoundText = new Text();
-    private final MSOEChallengeObserver msoeChallengeObserver = new MSOEChallengeObserver();
-
 
 
 
@@ -127,8 +136,8 @@ public class CityMap extends Application {
      * @return a copy of list of the mobile entities found on the map. The entities themselves
      * are NOT copies.
      */
-    public List<MobileEntity> getMobileEntities() {
-        return new ArrayList<>(mobileEntities);
+    public static List<MobileEntity> getMobileEntities() {
+        return new ArrayList<>(MOBILE_ENTITIES);
     }
 
     /**
@@ -146,7 +155,7 @@ public class CityMap extends Application {
      * @param entity The entity doing the tagging.
      */
     public void taggedBy(MobileEntity entity) {
-        artChallengeObserver.update(getMuseums(), getMainCharacter());
+        artChallengeObserver.update(getMobileEntities());
         for(Taggable taggable: taggables) {
             if(taggable.isTagged(entity.getLocation())) {
                 taggable.taggedBy(entity);
@@ -154,8 +163,6 @@ public class CityMap extends Application {
 
         }
     }
-
-
 
     public double getWidth(){
         return backgroundView.getImage().getWidth();
@@ -178,22 +185,33 @@ public class CityMap extends Application {
         challengePane.setMinWidth(MIN_CHALLENGES_WIDTH);
         Pane mapPane = new Pane();
 
+        // setting up the museumChallengeText here!
         VBox museumChallenge = new VBox();
-        museumChallenge.getChildren().addAll(challengeText, FOUND_TEXT, IMAGE_VIEW);
+        museumChallenge.getChildren().addAll(artChallengeText, FOUND_TEXT, IMAGE_VIEW);
         museumChallenge.setPrefWidth(WIDTH);
         museumChallenge.setSpacing(SPACING);
 
+        // setting up the msoeChallengeText here!
         VBox msoeChallenge = new VBox();
-        msoeChallengeText.setFont(new Font(20));
+        msoeChallengeText.setText("Challenge: Find all the letters in MSOE");
+        msoeChallengeText.setFont(new Font(FONT_SIZE));
         msoeChallengeGoalText.setText("Goal: MSOE");
-        msoeChallengeGoalText.setFont(new Font(20));
-        msoeChallengeFoundText.setText("Found: ****");
-        msoeChallengeFoundText.setFont(new Font(20));
-        msoeChallenge.getChildren().addAll(msoeChallengeText, msoeChallengeGoalText, msoeChallengeFoundText);
+        msoeChallengeGoalText.setFont(new Font(FONT_SIZE));
+        MSOE_CHALLENGE_FONUD_TEXT.setText("Found: ****");
+        MSOE_CHALLENGE_FONUD_TEXT.setFont(new Font(FONT_SIZE));
+        msoeChallenge.getChildren().addAll(msoeChallengeText, msoeChallengeGoalText,
+                MSOE_CHALLENGE_FONUD_TEXT);
         msoeChallenge.setPrefWidth(WIDTH);
 
+        // setting up the busChallengeText here!
+        VBox busChallenge = new VBox();
+        busChallenge.getChildren().addAll(BUS_CHALLENGE_TEXT, BUS_CHALLENGE_GOAL,
+                BUS_CHALLENGE_FOUND_TEXT);
+
+
+        // combining all the challenges together!
         VBox challengeCombined = new VBox();
-        challengeCombined.getChildren().addAll(msoeChallenge, museumChallenge);
+        challengeCombined.getChildren().addAll(msoeChallenge, museumChallenge, busChallenge);
         challengeCombined.setSpacing(SPACING);
 
 
@@ -203,8 +221,9 @@ public class CityMap extends Application {
 
         overlay.getChildren().addAll(backgroundView);
         mapPane.getChildren().addAll(overlay);
-        challengeText.setText("Challenge: Find art");
-        challengeText.setFont(new Font(FONT_SIZE));
+        artChallengeText.setText("Challenge: Find art");
+        artChallengeText.setFont(new Font(FONT_SIZE));
+
         root.getChildren().addAll(mapPane, challengeCombined, challengePane);
 
 
@@ -214,12 +233,50 @@ public class CityMap extends Application {
         addEntities();
     }
 
+
+    /**
+     * method for setting the bus challenge text
+     * @param challengeText challenge text
+     * @param goalText goal text
+     * @param foundText found text
+     * @param fontSize size of the font
+     */
+    public static void setBusChallengeText(String challengeText, String goalText,
+                                           String foundText, int fontSize) {
+        BUS_CHALLENGE_TEXT.setText(challengeText);
+        BUS_CHALLENGE_TEXT.setFont(new Font(fontSize));
+        BUS_CHALLENGE_GOAL.setText(goalText);
+        BUS_CHALLENGE_GOAL.setFont(new Font(fontSize));
+        BUS_CHALLENGE_FOUND_TEXT .setText(foundText);
+        BUS_CHALLENGE_FOUND_TEXT .setFont(new Font(fontSize));
+
+    }
+
+    public static Text getBusChallengeFoundText() {
+        return BUS_CHALLENGE_FOUND_TEXT;
+    }
+
+    /**
+     * method for setting the MSOE challenge text
+     * @param text text
+     * @param fontSize fontSize
+     */
+    public static void setMSOEChallengeText(String text, int fontSize) {
+        MSOE_CHALLENGE_FONUD_TEXT.setText(text);
+        MSOE_CHALLENGE_FONUD_TEXT.setFont(new Font(fontSize));
+    }
+
+    public static Text getMsoeChallengeFoundText() {
+        return MSOE_CHALLENGE_FONUD_TEXT;
+    }
+
+
     /**
      * method for setting the challenge text
      * @param text text
      * @param fontSize fontSize
      */
-    public static void setChallengeText(String text, int fontSize) {
+    public static void setArtChallengeText(String text, int fontSize) {
         FOUND_TEXT.setText(text);
         FOUND_TEXT.setFont(new Font(fontSize));
     }
@@ -230,12 +287,11 @@ public class CityMap extends Application {
      * @param height height
      * @param width width
      */
-    public static void setChallengeImage(Image artImage, int height, int width) {
+    public static void setArtChallengeImage(Image artImage, int height, int width) {
         IMAGE_VIEW.setImage(artImage);
         IMAGE_VIEW.setFitWidth(height);
         IMAGE_VIEW.setFitHeight(width);
     }
-
 
 
     /**
@@ -264,7 +320,7 @@ public class CityMap extends Application {
             // This method can be moved into the Mobile Entity constructor
             // for some implementations.
             car.addToCityMap();
-            mobileEntities.add(car);
+            MOBILE_ENTITIES.add(car);
         }
 
         for(int i = 0; i < NUM_BUSSES; i++) {
@@ -272,7 +328,7 @@ public class CityMap extends Application {
             // This method can be moved into the Mobile Entity constructor
             // for some implementations.
             bus.addToCityMap();
-            mobileEntities.add(bus);
+            MOBILE_ENTITIES.add(bus);
         }
 
         synchronized (CityMap.class) {
@@ -285,7 +341,6 @@ public class CityMap extends Application {
         }
 
         MUSEUMS.add(new Museum(this));
-
 
     }
 

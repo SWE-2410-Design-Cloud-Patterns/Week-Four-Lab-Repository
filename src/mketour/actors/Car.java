@@ -1,9 +1,9 @@
 /*
  * Course: SWE2410
  * Fall 2024
- * Lab 3 - Tourist Observer
+ * Lab 4 - Tourist Observer
  * Name: Jawadul Chowdhury
- * Submission Date: 9/23/24
+ * Submission Date: 9/30/24
  */
 package mketour.actors;
 
@@ -98,7 +98,7 @@ public class Car extends MobileEntity {
      * Randomly turn right with equal probability during each time-step.
      * I'm using the theory of exponential distributions [1]
      * in naming the variable MEAN_DISTANCE_BEFORE_TURN.
-     * Because the probability density function has a density of $\lambda$ at time zero, and a
+     * Because the probability density function has a density of $\lambda$ at time zero, and
      * of $1/\lambda$, we can say that since the probability of the event occurring is
      * mean of 1/MEAN_NUMBER_OF_STEPS, then (on average) we will go MEAN_NUMBER_OF_STEPS
      * before an event occurs. This approximation is valid only when MEAN_NUMBER_OF_STEPS
