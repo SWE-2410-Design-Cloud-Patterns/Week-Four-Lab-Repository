@@ -20,17 +20,12 @@ import mketour.CityMap;
 import mketour.MSOEChallengeObserver;
 import mketour.Taggable;
 
-import java.util.List;
 
 /**
  * Represents anything that can move around town.
- *
  * Basic functionality to display the item on the cityMap and move in straight lines.
  */
 public abstract class MobileEntity implements Taggable {
-
-    MSOEChallengeObserver msoeChallengeObserver = new MSOEChallengeObserver();
-    BusChallengeObserver busChallengeObserver = new BusChallengeObserver();
 
     /**
      * Height in pixels to show an entity on the cityMap
@@ -77,6 +72,9 @@ public abstract class MobileEntity implements Taggable {
      * Velocity. In pixels/step
      */
     protected Point2D stepSize;
+
+    private final MSOEChallengeObserver msoeChallengeObserver = new MSOEChallengeObserver();
+    private final BusChallengeObserver busChallengeObserver = new BusChallengeObserver();
 
 
 
