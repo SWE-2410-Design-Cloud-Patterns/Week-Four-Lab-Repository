@@ -42,9 +42,11 @@ public class BusChallengeObserver implements ChallengeObserver {
 
         for (MobileEntity mobileEntity : mobileEntities) {
             if (mobileEntity instanceof Car) {
-                if(!mobileEntity.isTagged(CityMap.getMainCharacter().getLocation())) {
+                if(mobileEntity.isTagged(CityMap.getMainCharacter().getLocation())) {
 
                     String plateNumber = mobileEntity.getName();
+                    System.out.print(plateNumber);
+
                     StringBuilder challengeString = new StringBuilder(foundText);
 
                     for (int i = 0; i < plateNumber.length(); i++) {
